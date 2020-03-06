@@ -37,7 +37,8 @@ class HealthKitSetupAssistant {
     case dataTypeNotAvailable
   }
   
-  class func authorizeHealthKit(completion: @escaping (Bool, Error?) -> Swift.Void) {
+    
+    class func authorizeHealthKit(completion: @escaping (Bool, Error?) -> Swift.Void) {
     //1. Check to see if HealthKit Is Available on this device
     guard HKHealthStore.isHealthDataAvailable() else {
         completion(false, HealthkitSetupError.notAvailableOnDevice)
@@ -50,6 +51,9 @@ class HealthKitSetupAssistant {
         let bodyMassIndex = HKObjectType.quantityType(forIdentifier: .bodyMassIndex),
         let height = HKObjectType.quantityType(forIdentifier: .height),
         let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass),
+        let heartRate = HKObjectType.quantityType(forIdentifier: .heartRate),
+        let restingHeartRate = HKObjectType.quantityType(forIdentifier: .restingHeartRate),
+        let hrv = HKObjectType.quantityType(forIdentifier: .heartRateVariabilitySDNN),
         let activeEnergy = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
             
             completion(false, HealthkitSetupError.dataTypeNotAvailable)
@@ -66,7 +70,11 @@ class HealthKitSetupAssistant {
                                                    bodyMassIndex,
                                                    height,
                                                    bodyMass,
-                                                   HKObjectType.workoutType()]
+                                                   heartRate,
+                                                   restingHeartRate,
+                                                   hrv,
+                                                   HKObjectType.workoutType(),
+                                                   HKSeriesType.heartbeat()]
     //4. Request Authorization
     HKHealthStore().requestAuthorization(toShare: healthKitTypesToWrite,
                                          read: healthKitTypesToRead) { (success, error) in

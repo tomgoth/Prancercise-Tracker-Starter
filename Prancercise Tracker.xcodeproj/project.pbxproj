@@ -184,6 +184,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -367,6 +368,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Prancercise Tracker/Prancercise Tracker.entitlements";
 				DEVELOPMENT_TEAM = ZFR2WW2QW8;
 				INFOPLIST_FILE = "Prancercise Tracker/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pmcapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -382,6 +384,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Prancercise Tracker/Prancercise Tracker.entitlements";
 				DEVELOPMENT_TEAM = ZFR2WW2QW8;
 				INFOPLIST_FILE = "Prancercise Tracker/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pmcapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

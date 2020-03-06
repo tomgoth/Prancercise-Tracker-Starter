@@ -65,6 +65,10 @@ class ProfileViewController: UITableViewController {
     loadAndDisplayAgeSexAndBloodType()
     loadAndDisplayMostRecentWeight()
     loadAndDisplayMostRecentHeight()
+    ProfileDataStore.getMostRecentHRV()
+    ProfileDataStore.getMostRecentRHRs()
+    ProfileDataStore.getMostRecentHRVSeriesSample()
+//    ProfileDataStore.getMostRecentHRSeriesSamples()
   }
   
   private func loadAndDisplayAgeSexAndBloodType() {
