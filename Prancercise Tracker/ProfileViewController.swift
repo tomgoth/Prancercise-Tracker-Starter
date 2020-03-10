@@ -67,8 +67,8 @@ class ProfileViewController: UITableViewController {
     loadAndDisplayMostRecentHeight()
     ProfileDataStore.getMostRecentHRV()
     ProfileDataStore.getMostRecentRHRs()
-    ProfileDataStore.getMostRecentHRVSeriesSample()
-//    ProfileDataStore.getMostRecentHRSeriesSamples()
+    displayStringAlert(for: ProfileDataStore.getMostRecentHRVSeriesSample())
+    //ProfileDataStore.getMostRecentHRSeriesSamples()
   }
   
   private func loadAndDisplayAgeSexAndBloodType() {
@@ -187,6 +187,20 @@ class ProfileViewController: UITableViewController {
     
     present(alert, animated: true, completion: nil)
   }
+
+
+    private func displayStringAlert(for string: String) {
+       
+       let alert = UIAlertController(title: nil,
+                                     message: string,
+                                     preferredStyle: .alert)
+       
+       alert.addAction(UIAlertAction(title: "O.K.",
+                                     style: .default,
+                                     handler: nil))
+       
+       present(alert, animated: true, completion: nil)
+     }
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     

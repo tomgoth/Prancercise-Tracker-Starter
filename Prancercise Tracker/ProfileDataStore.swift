@@ -101,6 +101,7 @@ class ProfileDataStore {
     class func getMostRecentHRSeriesSample(completion: @escaping (HKHeartbeatSeriesSample?, Error?) -> Swift.Void) {
         
         //1. Use HKQuery to load the most recent samples.
+        let semaphore = DispatchSemaphore(value: 0)
         let mostRecentPredicate = HKQuery.predicateForSamples(withStart: Date.distantPast,
                                                               end: Date(),
                                                               options: .strictEndDate)
@@ -116,7 +117,7 @@ class ProfileDataStore {
                                         sortDescriptors: [sortDescriptor]) { (query, samples, error) in
                                             
                                             //2. Always dispatch to the main thread when complete.
-                                            DispatchQueue.main.async {
+                                            //DispatchQueue.main.async {
                                                 
                                                 guard let samples = samples,
                                                     let mostRecentSample = samples.first as? HKHeartbeatSeriesSample else {
@@ -126,11 +127,13 @@ class ProfileDataStore {
                                                 }
                                                 
                                                 completion(mostRecentSample, nil)
+                                            semaphore.signal()
                                                 
-                                            }
+                                            //}
         }
         
         HKHealthStore().execute(sampleQuery)
+        semaphore.wait()
     }
     
     class func getSamples(for sampleType: HKSampleType,
@@ -202,8 +205,13 @@ class ProfileDataStore {
         HKHealthStore().execute(sampleQuery)
     }
     
-    class func getBeatToBeatMeasurments(seriesSample: HKHeartbeatSeriesSample) {
-        var semaphore = DispatchSemaphore (value: 0)
+    class func getBeatToBeatMeasurments(seriesSample: HKHeartbeatSeriesSample) -> String {
+        let startDate = seriesSample.startDate
+        let endDate = seriesSample.endDate
+        print("start date", startDate)
+        print("end date", endDate)
+        var returnString = ""
+        let semaphore = DispatchSemaphore (value: 0)
         var postParams = ""
         
         let hrseriesquery = HKHeartbeatSeriesQuery(heartbeatSeries: seriesSample) {
@@ -224,7 +232,7 @@ class ProfileDataStore {
         
         semaphore.wait() // wait for query to finish
         
-        let parameters = "[" + postParams.dropLast() + "]" //remove last , and add brackets for JSON array
+        let parameters = "{\"beatToBeat\": [\(postParams.dropLast())],\"date\":\"\(endDate)\"}" //remove last , and add brackets for JSON array
         print("parameters", parameters)
         
         let postData = parameters.data(using: .utf8)
@@ -240,12 +248,15 @@ class ProfileDataStore {
                 print(String(describing: error))
                 return
             }
-            print(String(data: data, encoding: .utf8)!) //shall I do something with the response?
+             //shall I do something with the response?
+            returnString = String(data: data, encoding: .utf8)!
+            print(returnString)
             semaphore.signal()
         }
         
         task.resume()
         semaphore.wait() //wait for REST call to finish
+        return returnString
     }
     
     class func getMostRecentHeartRates() {
@@ -297,20 +308,20 @@ class ProfileDataStore {
         }
     }
     
-    class func getMostRecentHRVSeriesSample() {
-
+    class func getMostRecentHRVSeriesSample() -> String {
+        var returnString = ""
         self.getMostRecentHRSeriesSample() { (sample, error) in
         guard let sample = sample else {
             if let error = error {
                 print(error.localizedDescription)
              }
-                               
                 return
             }
-            
-            getBeatToBeatMeasurments(seriesSample: sample)
-            
-            }
+            returnString = getBeatToBeatMeasurments(seriesSample: sample)
+        }
+        
+        print("getMostRecentHRVSeriesSample", returnString)
+        return returnString
         
     }
     
